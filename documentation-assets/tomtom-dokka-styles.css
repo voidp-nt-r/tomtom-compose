@@ -1,0 +1,19 @@
+:root {
+    --dokka-logo-image-url: url('../images/TomTom-logo-dark.png');
+    --dokka-logo-height: 30px;
+    --dokka-logo-width: 156px;
+
+
+    --active-section-color: #df1b12;
+    --active-tab-border-color: #df1b12;
+    --sidemenu-section-active-color: #df1b127d;
+}
+
+
+.library-name--link::before {
+    background-size: var(--dokka-logo-width)
+        var(--dokka-logo-height);
+    width: var(--dokka-logo-width);
+    height: var(--dokka-logo-height);
+    margin-right: 0.75rem;
+}
