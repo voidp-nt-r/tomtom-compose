@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    `maven-publish`
 }
 
 android {
@@ -55,4 +56,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("jitpack") {
+                from(components["release"])
+                groupId = "com.github.voidp-nt-r"
+                artifactId = "tomtom-compose"
+            }
+        }
+    }
 }
