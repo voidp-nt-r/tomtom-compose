@@ -1,7 +1,8 @@
 :root {
-    --dokka-logo-image-url: url('../images/TomTom-logo-dark.png');
+
+    /*--dokka-logo-image-url: url('../images/tomtom-logo.png');
     --dokka-logo-height: 30px;
-    --dokka-logo-width: 156px;
+    --dokka-logo-width: 156px;*/
 
 
     --active-section-color: #df1b12;
@@ -16,4 +17,20 @@
     width: var(--dokka-logo-width);
     height: var(--dokka-logo-height);
     margin-right: 0.75rem;
+}
+
+.footer a {
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    transition: color .1s, border-color .1s;
+}
+
+.footer a:hover {
+    border-bottom-color: unset;
+    color: inherit;
 }

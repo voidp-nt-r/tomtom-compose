@@ -16,10 +16,7 @@ buildscript {
 subprojects {
     tasks.withType<DokkaTask>().configureEach {
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-            customAssets = listOf(
-                file("../documentation-assets/tomtom-logo.png")
-            )
-            footerMessage = "This is an <b>unofficial</b> library for TomTom Maps."
+            footerMessage = "This is an <b>unofficial</b> library. For recommended practices and official guidance on using the Map SDK, please refer to the official <a href='https://developer.tomtom.com/maps/android/introduction/introduction'>TomTom Developer Portal.</a>"
             customStyleSheets = listOf(
                 file("../documentation-assets/tomtom-dokka-styles.css")
             )
