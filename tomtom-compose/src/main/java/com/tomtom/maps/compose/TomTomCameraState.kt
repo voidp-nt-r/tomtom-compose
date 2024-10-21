@@ -3,16 +3,22 @@ package com.tomtom.maps.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.currentComposer
-import com.tomtom.sdk.location.GeoPoint
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.tomtom.sdk.map.display.TomTomMap
+import com.tomtom.sdk.map.display.annotation.ExperimentalCameraApi
 import com.tomtom.sdk.map.display.camera.CameraController
 import com.tomtom.sdk.map.display.camera.CameraOptions
+import com.tomtom.sdk.map.display.camera.CameraPosition
 import kotlin.time.Duration
 
 /**
  * Function to create a [TomTomCameraState] to manage the camera of a [TomTomMap] view.
  *
- * @param animationDuration [Duration] of the animations when camera position is modified.
+ * @param initState Lambda function to initialize the camara state.
  *
  * @return A [TomTomCameraState] that can be used to set and update the position of the camera of
  * a [TomTomMap] view.
@@ -21,24 +27,11 @@ import kotlin.time.Duration
  * @see Duration
  */
 @Composable
-fun rememberCameraState(
-    initialCoordinates: GeoPoint? = null,
-    initialZoom: Double? = null,
-    initialTilt: Double? = null,
-    initialRotation: Double? = null,
-    initialFieldOfView: Double? = null,
-    animationDuration: Duration = CameraController.DEFAULT_ANIMATION_DURATION
-): TomTomCameraState =
-    TomTomCameraState(
-        initialCameraOptions = CameraOptions(
-            initialCoordinates,
-            initialZoom,
-            initialTilt,
-            initialRotation,
-            initialFieldOfView
-        ),
-        initialAnimationDuration = animationDuration
-    )
+inline fun rememberCameraState(
+    crossinline initState: TomTomCameraState.() -> Unit = {}
+): TomTomCameraState = rememberSaveable(saver = TomTomCameraState.Saver) {
+    TomTomCameraState().apply(initState)
+}
 
 /**
  * Class to create state objects of the MapView camera.
@@ -52,7 +45,7 @@ fun rememberCameraState(
  */
 class TomTomCameraState(
     initialCameraOptions: CameraOptions = CameraOptions(),
-    initialAnimationDuration: Duration
+    initialAnimationDuration: Duration = CameraController.DEFAULT_ANIMATION_DURATION
 ) {
 
     var cameraOptions: CameraOptions = initialCameraOptions
@@ -65,14 +58,26 @@ class TomTomCameraState(
             field = value
         }
 
+    internal var cameraPosition by mutableStateOf(cameraOptions.position)
+
     private var map: TomTomMap? = null
 
     internal fun setMap(map: TomTomMap?) {
         this.map = map
     }
 
-    private var animationDuration: Duration = initialAnimationDuration
+    var animationDuration: Duration = initialAnimationDuration
 
+    val currentPosition
+        get() = this.cameraPosition
+
+
+    companion object {
+        val Saver = Saver<TomTomCameraState, CameraOptions>(
+            save = { CameraOptions(position = it.currentPosition) },
+            restore = { TomTomCameraState(it) }
+        )
+    }
 }
 
 /**
@@ -90,7 +95,14 @@ internal class TomTomCameraNode(
         cameraState.setMap(map)
     }
 
+    private val updateCameraProps = { properties: CameraPosition ->
+        cameraState.cameraPosition = properties.position
+    }
+
+    @OptIn(ExperimentalCameraApi::class)
     override fun onAttached() {
+        map?.addCameraPropertiesChangeListener(updateCameraProps)
+        map?.addCameraPropertiesSteadyListener(updateCameraProps)
     }
 
     override fun onCleared() {
