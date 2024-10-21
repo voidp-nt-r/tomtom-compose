@@ -48,6 +48,8 @@ Locate in to your `build.gradle.kt` project level file and add the following lin
 
 </details>
 
+---
+
 <details>
 <summary> Version catalog </summary>
 
@@ -112,7 +114,7 @@ TomTomMap(
 
 - [x] Create a composable from MapView.
 - [ ] Manage MapView clik listeners.
-- [ ] Manage camera state (currently, is possible to modify the camera position but retrieving the current camera position is not).
+- [x] Manage camera state (currently, is possible to modify the camera position but retrieving the current camera position is not).
 - [ ] Integrate full UI controls of the MapView.
 - [ ] Integrate a location provider.
 - [x] Integrate marker as a TomTomMap composable.
