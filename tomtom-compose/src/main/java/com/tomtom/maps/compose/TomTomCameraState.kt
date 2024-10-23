@@ -116,7 +116,7 @@ internal class TomTomCameraNode(
 }
 
 /**
- * Composable to manage the sate of the camera and prevent recomposition on the main map view,
+ * Composable to manage the state of the camera and prevent recomposition on the main map view,
  * updating only the camera values on state change.
  *
  * @param cameraState The state of the camera to observe for updates.
@@ -125,7 +125,7 @@ internal class TomTomCameraNode(
  * @see TomTomCameraNode
  */
 @Composable
-fun CameraUpdater(
+internal fun CameraUpdater(
     cameraState: TomTomCameraState,
 ) {
     val mapApplier = currentComposer.applier as? TomTomMapApplier

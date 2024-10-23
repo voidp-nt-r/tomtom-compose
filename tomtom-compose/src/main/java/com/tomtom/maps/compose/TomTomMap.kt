@@ -18,6 +18,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.tomtom.sdk.map.display.MapOptions
 import com.tomtom.sdk.map.display.TomTomMap
+import com.tomtom.sdk.map.display.gesture.MapClickListener
+import com.tomtom.sdk.map.display.gesture.MapDoubleClickListener
+import com.tomtom.sdk.map.display.gesture.MapLongClickListener
+import com.tomtom.sdk.map.display.gesture.MapPanningListener
 import com.tomtom.sdk.map.display.ui.MapView
 import com.tomtom.sdk.map.display.ui.compass.CompassButton
 import com.tomtom.sdk.map.display.ui.currentlocation.CurrentLocationButton
@@ -40,6 +44,10 @@ import kotlinx.coroutines.launch
  * @param compassButtonVisibilityPolicy Defines the visibility of the compass on map.
  * @param showZoomControl Determine whether th zoom control buttons are visible when true and hidden
  * when false.
+ * @param clickListener [MapClickListener] to execute whe the map is clicked.
+ * @param doubleClickListener [MapDoubleClickListener] to execute when the map is double clicked.
+ * @param longClickListener [MapLongClickListener] to execute when the map is kept pressed.
+ * @param panningListener [MapPanningListener] to execute when the map is panned.
  * @param content A [TomTomMapComposable] function that defines the map components to be shown on
  * the map.
  *
@@ -58,6 +66,10 @@ fun TomTomMap(
     currentLocationButtonVisibilityPolicy: CurrentLocationButton.VisibilityPolicy = CurrentLocationButton.VisibilityPolicy.Visible,
     compassButtonVisibilityPolicy: CompassButton.VisibilityPolicy = CompassButton.VisibilityPolicy.InvisibleWhenNorthUp,
     showZoomControl: Boolean = false,
+    clickListener: MapClickListener? = null,
+    doubleClickListener: MapDoubleClickListener? = null,
+    longClickListener: MapLongClickListener? = null,
+    panningListener: MapPanningListener? = null,
     content: @Composable @TomTomMapComposable () -> Unit
 ) {
     val parentCompositionScope = rememberCoroutineScope()
@@ -92,6 +104,10 @@ fun TomTomMap(
                         mapView = mapView,
                         cameraState = cameraState,
                         parentComposition = parentComposition,
+                        clickListener = clickListener,
+                        doubleClickListener = doubleClickListener,
+                        longClickListener = longClickListener,
+                        panningListener = panningListener,
                         content = content
                     )
                 }
@@ -108,6 +124,10 @@ private fun CoroutineScope.launchSubComposition(
     map: TomTomMap,
     mapView: MapView,
     cameraState: TomTomCameraState,
+    clickListener: MapClickListener?,
+    doubleClickListener: MapDoubleClickListener?,
+    longClickListener: MapLongClickListener?,
+    panningListener: MapPanningListener?,
     parentComposition: CompositionContext,
     content: @Composable () -> Unit
 ): Job {
@@ -120,6 +140,12 @@ private fun CoroutineScope.launchSubComposition(
             composition.setContent {
                 CameraUpdater(
                     cameraState = cameraState,
+                )
+                GestureListenerUpdater(
+                    clickListener = clickListener,
+                    doubleClickListener = doubleClickListener,
+                    longClickListener = longClickListener,
+                    panningListener = panningListener,
                 )
                 CompositionLocalProvider(
                     content = content
