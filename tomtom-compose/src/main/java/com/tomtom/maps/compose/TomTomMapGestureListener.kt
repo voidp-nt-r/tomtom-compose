@@ -62,14 +62,23 @@ internal class TomTomGestureListenerNode(
         this.panningListener?.let { this.map.addMapPanningListener(it) }
     }
 
+    private fun removeGestureListeners() {
+        this.clickListener?.let { this.map.removeMapClickListener(it) }
+        this.doubleClickListener?.let { this.map.removeMapDoubleClickListener(it) }
+        this.longClickListener?.let { this.map.removeMapLongClickListener(it) }
+        this.panningListener?.let { this.map.removeMapPanningListener(it) }
+    }
+
     override fun onAttached() {
         this.setGestureListeners()
     }
 
     override fun onCleared() {
+        this.removeGestureListeners()
     }
 
     override fun onRemove() {
+        this.removeGestureListeners()
     }
 
 }
