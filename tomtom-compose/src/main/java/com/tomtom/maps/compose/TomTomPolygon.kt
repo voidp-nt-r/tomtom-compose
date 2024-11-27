@@ -26,10 +26,6 @@ internal class TomTomPolygonNode(
         polygon.remove()
     }
 
-    override fun onCleared() {
-        polygon.remove()
-    }
-
     override fun equals(other: Any?): Boolean =
         when(other) {
             is TomTomPolylineNode -> {
